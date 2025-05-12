@@ -9,7 +9,7 @@ class Usuario {
     public $nombre;
     public $apellido;
     public $email;
-    public $contraseña;
+    public $clave;
     public $fecha_nacimiento;
     public $telefono;
     public $direccion;
@@ -48,10 +48,10 @@ class Usuario {
     // Crear nuevo usuario
     public function crear() {
         $query = "INSERT INTO " . $this->table_name . "
-                (nombre, apellido, email, contraseña, fecha_nacimiento, 
+                (nombre, apellido, email, clave, fecha_nacimiento, 
                  telefono, direccion, rol)
                 VALUES
-                (:nombre, :apellido, :email, :contraseña, :fecha_nacimiento,
+                (:nombre, :apellido, :email, :clave, :fecha_nacimiento,
                  :telefono, :direccion, :rol)";
 
         $stmt = $this->conn->prepare($query);
@@ -60,25 +60,28 @@ class Usuario {
         $this->nombre = htmlspecialchars(strip_tags($this->nombre));
         $this->apellido = htmlspecialchars(strip_tags($this->apellido));
         $this->email = htmlspecialchars(strip_tags($this->email));
-        $this->contraseña = password_hash($this->contraseña, PASSWORD_DEFAULT);
-        $this->telefono = htmlspecialchars(strip_tags($this->telefono));
-        $this->direccion = htmlspecialchars(strip_tags($this->direccion));
+        $this->clave = password_hash($this->clave, PASSWORD_DEFAULT);
         $this->rol = htmlspecialchars(strip_tags($this->rol));
 
-        // Vincular valores
-        $stmt->bindParam(":nombre", $this->nombre);
-        $stmt->bindParam(":apellido", $this->apellido);
-        $stmt->bindParam(":email", $this->email);
-        $stmt->bindParam(":contraseña", $this->contraseña);
-        $stmt->bindParam(":fecha_nacimiento", $this->fecha_nacimiento);
-        $stmt->bindParam(":telefono", $this->telefono);
-        $stmt->bindParam(":direccion", $this->direccion);
-        $stmt->bindParam(":rol", $this->rol);
+        // Vincular todos los valores con bindValue
+        $stmt->bindValue(":nombre", $this->nombre);
+        $stmt->bindValue(":apellido", $this->apellido);
+        $stmt->bindValue(":email", $this->email);
+        $stmt->bindValue(":clave", $this->clave);
+        $stmt->bindValue(":rol", $this->rol);
+        $stmt->bindValue(":fecha_nacimiento", $this->fecha_nacimiento !== null ? $this->fecha_nacimiento : null, PDO::PARAM_NULL);
+        $stmt->bindValue(":telefono", $this->telefono !== null ? $this->telefono : null, PDO::PARAM_NULL);
+        $stmt->bindValue(":direccion", $this->direccion !== null ? $this->direccion : null, PDO::PARAM_NULL);
 
-        if($stmt->execute()) {
-            return true;
+        try {
+            if($stmt->execute()) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            error_log("Error al crear usuario: " . $e->getMessage());
+            throw $e;
         }
-        return false;
     }
 
     // Actualizar usuario
@@ -94,13 +97,13 @@ class Usuario {
 
         $stmt = $this->conn->prepare($query);
 
-        // Sanitizar datos
-        $this->nombre = htmlspecialchars(strip_tags($this->nombre));
-        $this->apellido = htmlspecialchars(strip_tags($this->apellido));
-        $this->email = htmlspecialchars(strip_tags($this->email));
-        $this->telefono = htmlspecialchars(strip_tags($this->telefono));
-        $this->direccion = htmlspecialchars(strip_tags($this->direccion));
-        $this->estado = htmlspecialchars(strip_tags($this->estado));
+        // Sanitizar datos solo si no son null
+        $this->nombre = $this->nombre !== null ? htmlspecialchars(strip_tags($this->nombre)) : null;
+        $this->apellido = $this->apellido !== null ? htmlspecialchars(strip_tags($this->apellido)) : null;
+        $this->email = $this->email !== null ? htmlspecialchars(strip_tags($this->email)) : null;
+        $this->telefono = $this->telefono !== null ? htmlspecialchars(strip_tags($this->telefono)) : null;
+        $this->direccion = $this->direccion !== null ? htmlspecialchars(strip_tags($this->direccion)) : null;
+        $this->estado = $this->estado !== null ? htmlspecialchars(strip_tags($this->estado)) : null;
         $this->id = htmlspecialchars(strip_tags($this->id));
 
         // Vincular valores
@@ -128,26 +131,5 @@ class Usuario {
             return true;
         }
         return false;
-    }
-
-    // Insertar un nuevo usuario
-    public function insertarUsuario($nombre, $apellido, $email, $contrasena, $fecha_nacimiento, $telefono, $direccion, $rol) {
-        try {
-            $query = "INSERT INTO Usuario (nombre, apellido, email, contraseña, fecha_nacimiento, telefono, direccion, rol) 
-                      VALUES (:nombre, :apellido, :email, :contrasena, :fecha_nacimiento, :telefono, :direccion, :rol)";
-            $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':nombre', $nombre);
-            $stmt->bindParam(':apellido', $apellido);
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':contrasena', $contrasena);
-            $stmt->bindParam(':fecha_nacimiento', $fecha_nacimiento);
-            $stmt->bindParam(':telefono', $telefono);
-            $stmt->bindParam(':direccion', $direccion);
-            $stmt->bindParam(':rol', $rol);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log("Error al insertar usuario: " . $e->getMessage());
-            return false;
-        }
     }
 } 

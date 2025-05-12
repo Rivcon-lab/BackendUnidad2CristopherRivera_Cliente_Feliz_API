@@ -67,21 +67,42 @@ class UsuarioController {
 
     // Crear nuevo usuario
     public function crearUsuario($data) {
+        // Debug: Log incoming data
+        error_log("Datos recibidos en crearUsuario: " . json_encode($data));
+
+        // Aceptar solo 'clave' como parámetro
+        $clave = isset($data['clave']) && !empty($data['clave']) ? $data['clave'] : null;
+
         if(
             !empty($data['nombre']) &&
             !empty($data['apellido']) &&
             !empty($data['email']) &&
-            !empty($data['contraseña']) &&
+            !empty($clave) &&
             !empty($data['rol'])
         ) {
+            // Debug: Log required fields
+            error_log("Campos requeridos presentes");
+            
             $this->usuario->nombre = $data['nombre'];
             $this->usuario->apellido = $data['apellido'];
             $this->usuario->email = $data['email'];
-            $this->usuario->contraseña = $data['contraseña'];
+            $this->usuario->clave = $clave;
             $this->usuario->fecha_nacimiento = $data['fecha_nacimiento'] ?? null;
             $this->usuario->telefono = $data['telefono'] ?? null;
             $this->usuario->direccion = $data['direccion'] ?? null;
             $this->usuario->rol = $data['rol'];
+
+            // Debug: Log model properties before creation
+            error_log("Propiedades del modelo antes de crear: " . json_encode([
+                'nombre' => $this->usuario->nombre,
+                'apellido' => $this->usuario->apellido,
+                'email' => $this->usuario->email,
+                'clave' => '***',
+                'fecha_nacimiento' => $this->usuario->fecha_nacimiento,
+                'telefono' => $this->usuario->telefono,
+                'direccion' => $this->usuario->direccion,
+                'rol' => $this->usuario->rol
+            ]));
 
             if($this->usuario->crear()) {
                 http_response_code(201);
@@ -91,8 +112,20 @@ class UsuarioController {
                 echo json_encode(array("mensaje" => "No se pudo crear el usuario."));
             }
         } else {
+            // Debug: Log missing fields
+            $missing_fields = [];
+            if(empty($data['nombre'])) $missing_fields[] = 'nombre';
+            if(empty($data['apellido'])) $missing_fields[] = 'apellido';
+            if(empty($data['email'])) $missing_fields[] = 'email';
+            if(empty($clave)) $missing_fields[] = 'clave';
+            if(empty($data['rol'])) $missing_fields[] = 'rol';
+            error_log("Campos faltantes: " . implode(', ', $missing_fields));
+            
             http_response_code(400);
-            echo json_encode(array("mensaje" => "No se pudo crear el usuario. Datos incompletos."));
+            echo json_encode(array(
+                "mensaje" => "No se pudo crear el usuario. Datos incompletos.",
+                "campos_faltantes" => $missing_fields
+            ));
         }
     }
 

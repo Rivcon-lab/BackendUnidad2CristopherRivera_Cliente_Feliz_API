@@ -1,0 +1,15 @@
+Options +ExecCGI
+AddHandler application/x-httpd-php .php
+
+<Files "api_test_report.php">
+    Order Allow,Deny
+    Allow from all
+    Require all granted
+</Files>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ api_test_report.php [L]
+</IfModule> 

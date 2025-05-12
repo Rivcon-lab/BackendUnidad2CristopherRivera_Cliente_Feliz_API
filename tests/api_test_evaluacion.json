@@ -1,0 +1,327 @@
+{
+  "info": {
+    "name": "Cliente Feliz API",
+    "description": "Colección de endpoints para la API de Cliente Feliz",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Listar Usuarios",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/usuarios",
+            "description": "Obtiene la lista de todos los usuarios"
+          }
+        },
+        {
+          "name": "Obtener Usuario por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/usuarios/:id",
+            "description": "Obtiene un usuario específico por su ID"
+          }
+        },
+        {
+          "name": "Crear Usuario",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/usuarios",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Papelucho\",\n    \"apellido\": \"Micky\",\n    \"email\": \"papelucho@ejemplo.com\",\n    \"clave\": \"contraseña123\",\n    \"rol\": \"Candidato\",\n    \"telefono\": \"+56912345678\",\n    \"direccion\": \"Calle Principal Secundaria 123, Santiago\",\n    \"fecha_nacimiento\": \"1990-05-15\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Crea un nuevo usuario"
+          }
+        },
+        {
+          "name": "Actualizar Usuario",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/usuarios/:id",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"nombre\": \"Juan Actualizado\",\n    \"apellido\": \"Pérez\",\n    \"email\": \"juan.actualizado@ejemplo.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Actualiza un usuario existente"
+          }
+        },
+        {
+          "name": "Eliminar Usuario",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/usuarios/4",
+            "description": "Elimina un usuario"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ofertas Laborales",
+      "item": [
+        {
+          "name": "Listar Ofertas",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ofertas",
+            "description": "Obtiene la lista de todas las ofertas laborales"
+          }
+        },
+        {
+          "name": "Obtener Oferta por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ofertas/2",
+            "description": "Obtiene una oferta laboral específica por su ID"
+          }
+        },
+        {
+          "name": "Crear Oferta",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/ofertas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"titulo\": \"Desarrollador Full Stack\",\n    \"descripcion\": \"Buscamos desarrollador con experiencia en PHP y JavaScript\",\n    \"ubicacion\": \"Santiago\",\n    \"salario\": 5000000,\n    \"tipo_contrato\": \"Indefinido\",\n    \"fecha_publicacion\": \"2024-05-20 10:00:00\",\n    \"fecha_cierre\": \"2024-12-31\",\n    \"estado\": \"Vigente\",\n    \"reclutador_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Crea una nueva oferta laboral"
+          }
+        },
+        {
+          "name": "Actualizar Oferta",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/ofertas/:id",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"titulo\": \"Desarrollador Full Stack Senior\",\n    \"salario\": 6000000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Actualiza una oferta laboral existente"
+          }
+        },
+        {
+          "name": "Eliminar Oferta",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/ofertas/5",
+            "description": "Elimina una oferta laboral"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Postulaciones",
+      "item": [
+        {
+          "name": "Listar Postulaciones",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/postulaciones?candidato_id=3",
+            "description": "Obtiene la lista de todas las postulaciones"
+          },
+          "response": [
+            {
+              "body": "{\n    \"mensaje\": \"Falta parámetro de búsqueda.\"\n}",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Obtener Postulaciones por Candidato",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/postulaciones?candidato_id=1",
+            "description": "Obtiene las postulaciones de un candidato específico"
+          }
+        },
+        {
+          "name": "Obtener Postulaciones por Oferta",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/postulaciones?oferta_laboral_id=1",
+            "description": "Obtiene las postulaciones para una oferta específica"
+          }
+        },
+        {
+          "name": "Crear Postulación",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/postulaciones",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"candidato_id\": 1,\n    \"oferta_laboral_id\": 1,\n    \"estado_postulacion\": \"Descartado\",\n    \"comentario\": \"Postulación de prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Crea una nueva postulación"
+          }
+        },
+        {
+          "name": "Actualizar Estado Postulación",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/postulaciones/:id",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"estado_postulacion\": \"aceptada\",\n    \"comentario\": \"Actualización de estado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Actualiza el estado de una postulación"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Antecedentes Académicos",
+      "item": [
+        {
+          "name": "Listar Antecedentes Académicos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/academicos?candidato_id=1",
+            "description": "Obtiene los antecedentes académicos de un candidato"
+          }
+        },
+        {
+          "name": "Crear Antecedente Académico",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/academicos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"candidato_id\": 1,\n    \"institucion\": \"Universidad de Chile\",\n    \"titulo_obtenido\": \"Ingeniería Civil en Informática\",\n    \"anio_ingreso\": 2018,\n    \"anio_egreso\": 2023\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Crea un nuevo antecedente académico"
+          }
+        },
+        {
+          "name": "Actualizar Antecedente Académico",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/academicos/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"institucion\": \"Universidad de Chile\",\n    \"titulo_obtenido\": \"Ingeniería Civil en Informática\",\n    \"anio_ingreso\": 2018,\n    \"anio_egreso\": 2023\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Actualiza un antecedente académico existente"
+          }
+        },
+        {
+          "name": "Eliminar Antecedente Académico",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/academicos/4",
+            "description": "Elimina un antecedente académico"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Antecedentes Laborales",
+      "item": [
+        {
+          "name": "Listar Antecedentes Laborales",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/laborales?candidato_id=1",
+            "description": "Obtiene los antecedentes laborales de un candidato"
+          }
+        },
+        {
+          "name": "Crear Antecedente Laboral",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/laborales",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"candidato_id\": 3,\n    \"empresa\": \"Tech Solutions\",\n    \"cargo\": \"Desarrollador Full Stack\",\n    \"funciones\": \"Desarrollo de aplicaciones web\",\n    \"fecha_inicio\": \"2023-01-01\",\n    \"fecha_termino\": \"2023-12-31\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Crea un nuevo antecedente laboral"
+          }
+        },
+        {
+          "name": "Actualizar Antecedente Laboral",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/laborales/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"empresa\": \"Tech Solutions\",\n    \"cargo\": \"Desarrollador Full Stack\",\n    \"funciones\": \"Desarrollo de aplicaciones web\",\n    \"fecha_inicio\": \"2023-01-01\",\n    \"fecha_termino\": \"2023-12-31\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Actualiza un antecedente laboral existente"
+          }
+        },
+        {
+          "name": "Eliminar Antecedente Laboral",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/laborales/4",
+            "description": "Elimina un antecedente laboral"
+          }
+        }
+      ]
+    }
+  ],  
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost/cliente-feliz-api",
+      "type": "string"
+    }
+  ]
+} 

@@ -1,4 +1,9 @@
 RewriteEngine On
+
+# Excluir la carpeta tests del enrutamiento de la API
+RewriteRule ^tests/ - [L]
+
+# Redirigir todas las demás peticiones a index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
@@ -10,4 +15,6 @@ Options -Indexes
 AddDefaultCharset UTF-8
 
 # Enable CORS
-Header set Access-Control-Allow-Origin "*" 
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization" 
